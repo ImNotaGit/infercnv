@@ -299,11 +299,16 @@ plot_cnv <- function(infercnv_obj,
                     "using the max height instead. (cairo seems to have a size limit of 32767 (2^15-1) pixels ",
                     "per dimension and 49151 (2^15+2^14-1)pixels for the sum of dimensions)"))
             }
-            png(paste(out_dir, paste(output_filename, ".png", sep=""), sep="/"),
-                width=10,
-                height=png_height,
-                units="in",
-                res=png_res)
+            tryCatch({
+              png(paste(out_dir, paste(output_filename, ".png", sep=""), sep="/"),
+                  width=10,
+                  height=png_height,
+                  units="in",
+                  res=png_res)
+            }, error=function(e) {
+              flog.warn(sprintf("Failed to start png device with the error:\n%s\nWill skip the plotting for now.", e))
+              return(NULL)
+            })
         }
     }
     
